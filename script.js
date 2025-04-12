@@ -1,5 +1,8 @@
+let lastFetchTimestamp = 0;
+
 window.onload = function () {
     fetchMessages();
+    setInterval(fetchMessages, 2000); // Обновляем чат каждые 2 секунды
 };
 
 function fetchMessages() {
@@ -8,10 +11,11 @@ function fetchMessages() {
         .then(messages => {
             const chatMessages = document.getElementById("chatMessages");
             chatMessages.innerHTML = "";
+
             messages.forEach(message => {
                 const messageElement = document.createElement("div");
                 messageElement.classList.add("message", message.sender === "user1" ? "sent" : "received");
-                
+
                 const textElement = document.createElement("span");
                 textElement.textContent = `${message.sender}: ${message.content}`;
                 messageElement.appendChild(textElement);
@@ -24,6 +28,7 @@ function fetchMessages() {
 
                 chatMessages.appendChild(messageElement);
             });
+
             chatMessages.scrollTop = chatMessages.scrollHeight;
         })
         .catch(error => console.error("Ошибка загрузки сообщений:", error));
@@ -48,7 +53,7 @@ function sendMessage() {
     .then(response => {
         if (response.ok) {
             messageInput.value = "";
-            fetchMessages();
+            fetchMessages(); // сразу обновить чат
         }
     })
     .catch(error => console.error("Ошибка отправки сообщения:", error));
